@@ -26,3 +26,6 @@ __pycache__/
 
 # User-specific Xcode schemes (keep shared ones)
 xcshareddata/WorkspaceSettings.xcsettings
+
+# Local-only reference material — not for the public repo
+Inspiracia/
