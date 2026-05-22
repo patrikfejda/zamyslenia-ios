@@ -63,9 +63,65 @@
       "season": "easter",
       "sha256": "aa69e0bb5e76e921d02b83ee188c6fd9b3fd26fba6719eb649cc0009970d8c98",
       "size": 5480
+    },
+    {
+      "date": "2026-05-23",
+      "feast": null,
+      "path": "days/2026/05/23.md",
+      "season": "easter",
+      "sha256": "d845c234ed20bd863dc8d1affec158759cd3c7afd685429cea7501d72a61af39",
+      "size": 3231
+    },
+    {
+      "date": "2026-05-24",
+      "feast": "Zoslanie Ducha Svätého (Turíce)",
+      "path": "days/2026/05/24.md",
+      "season": "easter",
+      "sha256": "7297458aa211b03cd0407cd0ab5987fe8658ce0427b0aaa042f5191191ac4f1f",
+      "size": 3709
+    },
+    {
+      "date": "2026-05-25",
+      "feast": null,
+      "path": "days/2026/05/25.md",
+      "season": "ordinary",
+      "sha256": "f8f1544ccfbaef332b3b2696a7093afaf35450b95d2e445c534720cd71e6f7dc",
+      "size": 3379
+    },
+    {
+      "date": "2026-05-26",
+      "feast": "sv. Filip Neri",
+      "path": "days/2026/05/26.md",
+      "season": "ordinary",
+      "sha256": "de969668f0529f99ed1eddcc5a32a59634c1eda483a70f7c34070217a13b1b05",
+      "size": 3068
+    },
+    {
+      "date": "2026-05-27",
+      "feast": null,
+      "path": "days/2026/05/27.md",
+      "season": "ordinary",
+      "sha256": "82ce458697efef146862d920797aecd3bf2ff6d00434fd35edf3ed93163d5782",
+      "size": 3167
+    },
+    {
+      "date": "2026-05-28",
+      "feast": null,
+      "path": "days/2026/05/28.md",
+      "season": "ordinary",
+      "sha256": "c69941e33d92fbd908864e582f08432578f8225f67c5bea9184996554abf525e",
+      "size": 3358
+    },
+    {
+      "date": "2026-05-29",
+      "feast": null,
+      "path": "days/2026/05/29.md",
+      "season": "ordinary",
+      "sha256": "3f3c4d00438910eb1921aa535b93f58603c38dbef22fd0aca1e5cbbd4d8a5e83",
+      "size": 4020
     }
   ],
-  "generatedAt": "2026-05-22T12:28:28Z",
+  "generatedAt": "2026-05-22T13:45:00Z",
   "schemaVersion": 1,
   "title": "Zamyslenia"
 }
