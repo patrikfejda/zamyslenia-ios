@@ -78,16 +78,19 @@ V mesiaci máj je dobré myslieť viac na Máriu...
 # 1. Pridáš/upravíš deň v content/days/YYYY/MM/DD.md
 $ vim content/days/2026/05/22.md
 
-# 2. Pregeneruješ manifest
-$ python3 scripts/generate-manifest.py
-
-# 3. Commit + push
-$ git add content/
+# 2. Commit + push — manifest dogeneruje CI
+$ git add content/days/
 $ git commit -m "Add 2026-05-22"
 $ git push
 ```
 
-Manifest sa **nesmie** editovať ručne.
+`content/manifest.json` sa generuje automaticky cez GitHub Action
+(`.github/workflows/manifest.yml`) pri každom pushi do `main`. Ručne ho
+needituj — bude prepísaný. Lokálne ho vieš pre debug pregenerovať cez
+`python3 scripts/generate-manifest.py`.
+
+V PR-och CI **neaktualizuje** manifest, len overí, že je v sync s obsahom
+— ak nie, build padne s návodom, čo treba spustiť.
 
 ## Setup iOS appky
 
