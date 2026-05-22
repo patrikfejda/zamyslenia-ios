@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// One day, one mode. Vertical scroll of four section cards. Sticky header
-/// with date navigation, mode toggle, and overflow actions.
+/// One day, one mode. Top date strip, four section cards in a vertical
+/// scroll, bottom toolbar with chrome. Horizontal swipe pages between
+/// days (provided by `DayContainer`).
 struct DayScreen: View {
     let day: DayContent
     let mode: DayMode
@@ -13,21 +14,17 @@ struct DayScreen: View {
     let onOpenBookmarks: () -> Void
     let onOpenCalendar: () -> Void
 
-    @Environment(\.theme) private var theme
-
     var body: some View {
-        VStack(spacing: 0) {
-            DayHeader(
-                dateISO: day.date,
-                mode: mode,
-                onPreviousDay: onPreviousDay,
-                onNextDay: onNextDay,
-                onToggleMode: onToggleMode,
-                onOpenSettings: onOpenSettings,
-                onOpenBookmarks: onOpenBookmarks,
-                onOpenCalendar: onOpenCalendar
-            )
-
+        DayContainer(
+            dateISO: day.date,
+            mode: mode,
+            onPreviousDay: onPreviousDay,
+            onNextDay: onNextDay,
+            onToggleMode: onToggleMode,
+            onOpenSettings: onOpenSettings,
+            onOpenBookmarks: onOpenBookmarks,
+            onOpenCalendar: onOpenCalendar
+        ) {
             ScrollView {
                 VStack(spacing: 36) {
                     ForEach(Array(mode.sections.enumerated()), id: \.element) { index, kind in
@@ -41,12 +38,13 @@ struct DayScreen: View {
                     }
                 }
                 .padding(.horizontal, 24)
-                .padding(.top, 24)
-                .padding(.bottom, 64)
+                .padding(.top, 18)
+                .padding(.bottom, 32)
             }
             .scrollIndicators(.hidden)
         }
-        .id("\(day.date)-\(mode.rawValue)")  // re-mount on day/mode change for clean transitions
+        // Re-mount on day/mode change for clean transitions.
+        .id("\(day.date)-\(mode.rawValue)")
         .transition(.opacity)
     }
 }

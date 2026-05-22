@@ -4,9 +4,14 @@ struct BookmarksView: View {
     let onOpen: (Bookmark) -> Void
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.theme) private var theme
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(BookmarksStore.self) private var bookmarks
     @Environment(ContentStore.self) private var store
+
+    @AppStorage(AppStorageKey.colorSchemeOverride)
+    private var colorSchemeOverride: ColorSchemeOverride = .auto
+
+    private var theme: ResolvedTheme { Theme.resolve(colorScheme) }
 
     var body: some View {
         NavigationStack {
@@ -27,6 +32,8 @@ struct BookmarksView: View {
                 }
             }
         }
+        .environment(\.theme, theme)
+        .preferredColorScheme(colorSchemeOverride.preferredColorScheme)
     }
 
     private var list: some View {

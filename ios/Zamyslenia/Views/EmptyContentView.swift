@@ -74,8 +74,9 @@ struct EmptyContentView: View {
 }
 
 /// Shown when the header arrows land on a date the user does not have
-/// locally. Keeps the full DayHeader so navigation stays consistent, and
-/// offers a one-tap sync — most "missing" cases are just "not yet pulled".
+/// locally. Uses the same `DayContainer` chrome (top strip + bottom toolbar
+/// + swipe) so the user can keep navigating, and centers a sync CTA — most
+/// "missing" cases are just "not yet pulled".
 struct MissingDayView: View {
     let dateISO: String
     let mode: DayMode
@@ -91,21 +92,18 @@ struct MissingDayView: View {
     @AppStorage(AppStorageKey.manifestURL) private var manifestURL = AppDefaults.manifestURL
 
     var body: some View {
-        VStack(spacing: 0) {
-            DayHeader(
-                dateISO: dateISO,
-                mode: mode,
-                onPreviousDay: onPreviousDay,
-                onNextDay: onNextDay,
-                onToggleMode: onToggleMode,
-                onOpenSettings: onOpenSettings,
-                onOpenBookmarks: onOpenBookmarks,
-                onOpenCalendar: onOpenCalendar
-            )
-
-            Spacer(minLength: 0)
-
+        DayContainer(
+            dateISO: dateISO,
+            mode: mode,
+            onPreviousDay: onPreviousDay,
+            onNextDay: onNextDay,
+            onToggleMode: onToggleMode,
+            onOpenSettings: onOpenSettings,
+            onOpenBookmarks: onOpenBookmarks,
+            onOpenCalendar: onOpenCalendar
+        ) {
             VStack(spacing: 20) {
+                Spacer(minLength: 0)
                 Image(systemName: "icloud.and.arrow.down")
                     .font(.system(size: 42, weight: .light))
                     .foregroundStyle(theme.accent)
@@ -155,17 +153,9 @@ struct MissingDayView: View {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
                 }
-
-                Button(action: onOpenCalendar) {
-                    Text("Otvoriť kalendár")
-                        .font(Typography.button())
-                        .foregroundStyle(theme.textSecondary)
-                }
-                .padding(.top, 4)
+                Spacer(minLength: 0)
             }
             .padding(.horizontal, 24)
-
-            Spacer(minLength: 0)
         }
     }
 

@@ -7,8 +7,13 @@ struct HistoryCalendarView: View {
     let onSelect: (String) -> Void
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.theme) private var theme
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(ContentStore.self) private var store
+
+    @AppStorage(AppStorageKey.colorSchemeOverride)
+    private var colorSchemeOverride: ColorSchemeOverride = .auto
+
+    private var theme: ResolvedTheme { Theme.resolve(colorScheme) }
 
     @State private var selection: Date
 
@@ -67,6 +72,8 @@ struct HistoryCalendarView: View {
                 }
             }
         }
+        .environment(\.theme, theme)
+        .preferredColorScheme(colorSchemeOverride.preferredColorScheme)
     }
 
     private var dateRange: ClosedRange<Date> {
