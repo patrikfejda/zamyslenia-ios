@@ -18,7 +18,7 @@ struct DayScreen: View {
     var body: some View {
         VStack(spacing: 0) {
             DayHeader(
-                day: day,
+                dateISO: day.date,
                 mode: mode,
                 onPreviousDay: onPreviousDay,
                 onNextDay: onNextDay,

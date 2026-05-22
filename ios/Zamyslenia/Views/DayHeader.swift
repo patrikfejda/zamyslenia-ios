@@ -4,7 +4,7 @@ import SwiftUI
 /// mode toggle (sun/moon), and an overflow menu for Settings / Bookmarks /
 /// Calendar. Designed to feel quiet — minimal lines, no boxed buttons.
 struct DayHeader: View {
-    let day: DayContent
+    let dateISO: String
     let mode: DayMode
     let onPreviousDay: () -> Void
     let onNextDay: () -> Void
@@ -87,7 +87,7 @@ struct DayHeader: View {
             Text(formattedDate)
                 .font(Typography.headerDate())
                 .foregroundStyle(theme.textPrimary)
-                .animation(.easeInOut(duration: 0.2), value: day.date)
+                .animation(.easeInOut(duration: 0.2), value: dateISO)
                 .contentTransition(.numericText())
 
             Spacer()
@@ -103,7 +103,7 @@ struct DayHeader: View {
     }
 
     private var formattedDate: String {
-        guard let date = DayResolver.parse(isoDate: day.date) else { return day.date }
+        guard let date = DayResolver.parse(isoDate: dateISO) else { return dateISO }
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "sk_SK")
         formatter.dateFormat = "EEEE, d. MMMM yyyy"

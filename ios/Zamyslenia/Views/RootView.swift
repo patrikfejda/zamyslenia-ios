@@ -73,21 +73,25 @@ struct RootView: View {
             )
         } else {
             MissingDayView(
-                date: currentDate,
+                dateISO: currentDate,
+                mode: mode,
                 onPreviousDay: { stepDay(-1) },
                 onNextDay: { stepDay(+1) },
+                onToggleMode: { withAnimation(.easeInOut) { mode = mode.opposite } },
+                onOpenSettings: { showSettings = true },
+                onOpenBookmarks: { showBookmarks = true },
                 onOpenCalendar: { showCalendar = true }
             )
         }
     }
 
-    /// Step to the next/previous *available* day so the user never lands on a
-    /// day with no content.
+    /// Step to the next/previous calendar day. Doesn't skip missing days —
+    /// landing on a non-cached day is a valid state that surfaces the sync
+    /// CTA via `MissingDayView`.
     private func stepDay(_ direction: Int) {
-        if let next = store.adjacentDate(to: currentDate, direction: direction) {
-            withAnimation(.easeInOut(duration: 0.25)) {
-                currentDate = next
-            }
+        guard let next = DayResolver.shift(isoDate: currentDate, by: direction) else { return }
+        withAnimation(.easeInOut(duration: 0.25)) {
+            currentDate = next
         }
     }
 }

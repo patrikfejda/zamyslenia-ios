@@ -73,36 +73,107 @@ struct EmptyContentView: View {
     }
 }
 
-/// Shown when the user steps to a date that isn't in the manifest. Rare —
-/// arrows in the header normally skip to adjacent available days.
+/// Shown when the header arrows land on a date the user does not have
+/// locally. Keeps the full DayHeader so navigation stays consistent, and
+/// offers a one-tap sync — most "missing" cases are just "not yet pulled".
 struct MissingDayView: View {
-    let date: String
+    let dateISO: String
+    let mode: DayMode
     let onPreviousDay: () -> Void
     let onNextDay: () -> Void
+    let onToggleMode: () -> Void
+    let onOpenSettings: () -> Void
+    let onOpenBookmarks: () -> Void
     let onOpenCalendar: () -> Void
 
     @Environment(\.theme) private var theme
+    @Environment(ContentSyncService.self) private var sync
+    @AppStorage(AppStorageKey.manifestURL) private var manifestURL = AppDefaults.manifestURL
 
     var body: some View {
-        VStack(spacing: 20) {
-            Spacer()
-            Image(systemName: "calendar.badge.exclamationmark")
-                .font(.system(size: 40, weight: .light))
-                .foregroundStyle(theme.textTertiary)
-            Text("Pre \(date) zatiaľ nie sú texty.")
-                .font(Typography.body())
-                .foregroundStyle(theme.textSecondary)
-                .multilineTextAlignment(.center)
-            HStack(spacing: 16) {
-                Button("Späť", action: onPreviousDay)
-                Button("Kalendár", action: onOpenCalendar)
-                Button("Ďalej", action: onNextDay)
+        VStack(spacing: 0) {
+            DayHeader(
+                dateISO: dateISO,
+                mode: mode,
+                onPreviousDay: onPreviousDay,
+                onNextDay: onNextDay,
+                onToggleMode: onToggleMode,
+                onOpenSettings: onOpenSettings,
+                onOpenBookmarks: onOpenBookmarks,
+                onOpenCalendar: onOpenCalendar
+            )
+
+            Spacer(minLength: 0)
+
+            VStack(spacing: 20) {
+                Image(systemName: "icloud.and.arrow.down")
+                    .font(.system(size: 42, weight: .light))
+                    .foregroundStyle(theme.accent)
+
+                VStack(spacing: 8) {
+                    Text("Texty pre tento deň nie sú stiahnuté")
+                        .font(.system(size: 22, weight: .semibold, design: .serif))
+                        .foregroundStyle(theme.textPrimary)
+                        .multilineTextAlignment(.center)
+                    Text("Skús aktualizovať texty — možno medzitým pribudol obsah na tento deň.")
+                        .font(Typography.body())
+                        .foregroundStyle(theme.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 32)
+                }
+
+                if sync.isSyncing {
+                    VStack(spacing: 6) {
+                        ProgressView().tint(theme.accent)
+                        if let progress = sync.progress {
+                            Text(progressLabel(progress))
+                                .font(Typography.caption())
+                                .foregroundStyle(theme.textTertiary)
+                        }
+                    }
+                } else {
+                    Button {
+                        Task { await sync.sync(manifestURLString: manifestURL) }
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: "arrow.clockwise")
+                            Text("Aktualizovať texty")
+                        }
+                        .font(Typography.button())
+                        .padding(.horizontal, 22)
+                        .padding(.vertical, 12)
+                        .background(theme.accent)
+                        .foregroundStyle(theme.background)
+                        .clipShape(Capsule())
+                    }
+                }
+
+                if let error = sync.lastError, !sync.isSyncing {
+                    Text(error)
+                        .font(Typography.caption())
+                        .foregroundStyle(.red)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 40)
+                }
+
+                Button(action: onOpenCalendar) {
+                    Text("Otvoriť kalendár")
+                        .font(Typography.button())
+                        .foregroundStyle(theme.textSecondary)
+                }
+                .padding(.top, 4)
             }
-            .font(Typography.button())
-            .foregroundStyle(theme.accent)
-            .padding(.top, 12)
-            Spacer()
+            .padding(.horizontal, 24)
+
+            Spacer(minLength: 0)
         }
-        .padding(.horizontal, 32)
+    }
+
+    private func progressLabel(_ p: SyncProgress) -> String {
+        switch p.phase {
+        case .fetchingManifest: "Sťahujem zoznam dní…"
+        case .downloadingDays:  "Sťahujem dni \(p.current + 1)/\(p.total)…"
+        case .finalizing:       "Dokončujem…"
+        }
     }
 }
